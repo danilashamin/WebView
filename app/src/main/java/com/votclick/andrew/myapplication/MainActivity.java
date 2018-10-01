@@ -3,8 +3,8 @@ package com.votclick.andrew.myapplication;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.constraint.Guideline;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.GeolocationPermissions;
 import android.webkit.WebChromeClient;
@@ -12,6 +12,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+
+import com.votclick.andrew.myapplication.custom.ObservableWebView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,9 +23,11 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.progressBar1)
     ProgressBar progressBar;
     @BindView(R.id.webview)
-    WebView myWebView;
+    ObservableWebView myWebView;
     @BindView(R.id.guideline)
     Guideline guideline;
+    @BindView(R.id.btnQR)
+    FloatingActionButton btnQR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,44 +54,42 @@ public class MainActivity extends AppCompatActivity {
                 callback.invoke(origin, true, false);
             }
         });
+
+        myWebView.setOnScrollChangeListener((ObservableWebView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY > oldScrollY)
+                btnQR.hide();
+            else if (scrollY < oldScrollY)
+                btnQR.show();
+
+        });
     }
 
     // This allows for a splash screen
     // (and hide elements once the page loads)
     private class CustomWebViewClient extends WebViewClient {
 
-
-        public void onGeolocationPermissionsShowPrompt(String origin,
-                                                       GeolocationPermissions.Callback callback) {
-            // Always grant permission since the app itself requires location
-            // permission and the user has therefore already granted it
-            callback.invoke(origin, true, false);
-        }
-
         @Override
         public void onPageStarted(WebView webview, String url, Bitmap favicon) {
-            webview.setVisibility(webview.INVISIBLE);
+            super.onPageStarted(webview, url, favicon);
+            progressBar.setVisibility(View.VISIBLE);
+            webview.setVisibility(WebView.INVISIBLE);
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
-
-            progressBar.setVisibility(View.GONE);
-
-            view.setVisibility(myWebView.VISIBLE);
             super.onPageFinished(view, url);
+            progressBar.setVisibility(View.GONE);
+            view.setVisibility(WebView.VISIBLE);
 
         }
     }
 
-
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && myWebView.canGoBack()) {
-            myWebView.goBack(); // Go to previous page
-            return true;
+    public void onBackPressed() {
+        if (myWebView.canGoBack()) {
+            myWebView.goBack();
+        } else {
+            super.onBackPressed();
         }
-        // Use this as else part
-        return super.onKeyDown(keyCode, event);
     }
 }
