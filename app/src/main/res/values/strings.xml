@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Сила Знаний</string>
+    <string name="app_name">The Power of Knowledge</string>
+    <string name="not_web">The scanned code is not a web address</string>
 </resources>
