@@ -1,5 +1,7 @@
-package com.votclick.andrew.myapplication;
+package com.votclick.andrew.myapplication.activity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.constraint.Guideline;
@@ -13,12 +15,17 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.votclick.andrew.myapplication.R;
 import com.votclick.andrew.myapplication.custom.ObservableWebView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final int QR_REQUEST_CODE = 3;
+    public static final String URL = "URL";
 
     @BindView(R.id.progressBar1)
     ProgressBar progressBar;
@@ -37,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         createWebView("http://google.com/");
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     public void createWebView(String url) {
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -64,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @OnClick(R.id.btnQR)
+    public void onBtnQRClicked() {
+        Intent starter = new Intent(this, QRActivity.class);
+        startActivityForResult(starter, QR_REQUEST_CODE);
+    }
+
     // This allows for a splash screen
     // (and hide elements once the page loads)
     private class CustomWebViewClient extends WebViewClient {
@@ -81,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
             view.setVisibility(WebView.VISIBLE);
 
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == QR_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            myWebView.loadUrl(data.getStringExtra(URL));
         }
     }
 
