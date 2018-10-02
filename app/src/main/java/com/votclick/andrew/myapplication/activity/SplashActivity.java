@@ -1,10 +1,12 @@
-package com.votclick.andrew.myapplication;
+package com.votclick.andrew.myapplication.activity;
 
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+
+import com.votclick.andrew.myapplication.R;
 
 public class SplashActivity extends AppCompatActivity {
 
