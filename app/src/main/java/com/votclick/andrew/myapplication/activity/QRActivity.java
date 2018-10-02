@@ -44,22 +44,15 @@ public class QRActivity extends AppCompatActivity {
 
     private void initCodeScanner() {
         codeScanner = new CodeScanner(this, codeScannerView);
-        codeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull final Result result) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (URLUtil.isValidUrl(result.getText())) {
-                            Toast.makeText(QRActivity.this, getString(R.string.not_web), Toast.LENGTH_SHORT).show();
-                        } else {
-                            sendResult(result.getText());
-                        }
-                    }
-                });
+        codeScanner.setDecodeCallback(result -> runOnUiThread(() -> {
+            if (!URLUtil.isValidUrl(result.getText())) {
+                Toast.makeText(QRActivity.this, getString(R.string.not_web), Toast.LENGTH_SHORT).show();
+            } else {
+                sendResult(result.getText());
             }
-        });
+        }));
         codeScannerView.setOnClickListener(v -> codeScanner.startPreview());
+
     }
 
     private boolean checkCameraPermissions() {
