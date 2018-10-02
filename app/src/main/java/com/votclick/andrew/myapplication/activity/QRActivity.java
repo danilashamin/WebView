@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
-import com.google.zxing.Result;
 import com.votclick.andrew.myapplication.R;
 
 import butterknife.BindView;
